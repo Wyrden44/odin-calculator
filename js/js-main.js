@@ -26,7 +26,7 @@ let operation = {
             let temp = this.runCalculation();
             temp = this.roundExcessive(temp);
             this.reset();
-            this.a = temp.toString();
+            this.a = temp;
             return true;
         }
         this.reset();
@@ -58,10 +58,12 @@ let operation = {
         if (this.operator !== "") {
             // user is starting right side of operation
             this.pointer = "right";
-            this.b += num;
+            if (!this.maxSizeReached())
+                this.b += num;
         }
         else {
-            this.a += num;
+            if (!this.maxSizeReached())
+                this.a += num;
         }
     },
 
@@ -97,10 +99,17 @@ let operation = {
         this.pointer = "left";
     },
 
-    roundExcessive(value) {
-        if (value.length > 10) {
-            ;
-        }
+    roundExcessive(value, max_digits=10) {
+        return value.toPrecision(max_digits);
+    },
+
+    maxSizeReached() {
+        console.log(this.a.length)
+        if (this.a.length >= 10 && this.pointer === "left")
+            return true;
+        if (this.a.length + this.b.length >= 11 && this.pointer === "right")
+            return true;
+        return false;
     },
 
     // gui
